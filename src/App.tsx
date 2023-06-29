@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import * as PIXI from 'pixi.js'
+import './App.css'
+import { useEffect } from 'react'
+import { game } from './game'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  useEffect(() => {
+    let app = new PIXI.Application({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      backgroundColor: 0xf9fbfc, //0x1099bb
+      antialias: true,
+      forceCanvas: false,
+      resizeTo: window,
+      autoDensity: true,
+    })
+    const pixiCanvas = document.querySelector('#pixiCanvas')
+    pixiCanvas?.appendChild(app.view as unknown as Node)
+
+    game(app)
+
+    return () => {
+      pixiCanvas?.removeChild(app.view as unknown as Node)
+      app.destroy()
+    }
+  }, [])
+  return <div className="App" id="pixiCanvas"></div>
 }
 
-export default App;
+export default App
