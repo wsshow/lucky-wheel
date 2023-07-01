@@ -8,7 +8,7 @@ function App() {
     let app = new PIXI.Application({
       width: window.innerWidth,
       height: window.innerHeight,
-      backgroundColor: 0x1099bb,
+      backgroundColor: 0xffffff,
       antialias: true,
       forceCanvas: false,
       resizeTo: window,

@@ -26,6 +26,10 @@ export const getPoints = (r: number, center: IPoint, count: number) => {
   return points
 }
 
+export const getRandom = (max:number)=>{
+  return Math.floor(Math.random() * max)
+}
+
 export const hitTestRectangle = (r1: IRectangle, r2: IRectangle) => {
   let combinedHalfWidths, combinedHalfHeights, vx, vy
 

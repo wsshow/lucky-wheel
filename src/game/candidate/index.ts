@@ -63,7 +63,7 @@ export class CandidateController {
     text.rotation = startAngle + endAngle
 
     const grap_sector = new PIXI.Graphics()
-    grap_sector.lineStyle(2, 0xffffff)
+    grap_sector.lineStyle(5, 0xffffff)
     grap_sector.beginFill(color, 0.9)
     grap_sector.moveTo(0, 0)
     grap_sector.arc(0, 0, this.radius, startAngle, endAngle)
@@ -82,15 +82,15 @@ export class CandidateController {
 
     const candidate = { name: name, color: color, container: stage_sector }
 
-    grap_sector.on('pointerover', () => {
-      grap_sector.scale.set(1.2)
-    })
-    grap_sector.on('pointerleave', () => {
-      grap_sector.scale.set(1)
-    })
-    grap_sector.on('pointerdown', () => {
-      console.log(candidate)
-    })
+    // grap_sector.on('pointerover', () => {
+    //   grap_sector.scale.set(1.2)
+    // })
+    // grap_sector.on('pointerleave', () => {
+    //   grap_sector.scale.set(1)
+    // })
+    // grap_sector.on('pointerdown', () => {
+    //   console.log(candidate)
+    // })
 
     return candidate
   }

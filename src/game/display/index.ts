@@ -38,4 +38,8 @@ export class DisplayController {
       .drawRoundedRect(0, 0, 300, 50, 15)
       .endFill()
   }
+
+  onPress(callbackFn:()=>void){
+    this.fancyButton.onPress.connect(callbackFn)
+  }
 }
