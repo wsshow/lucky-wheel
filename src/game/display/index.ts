@@ -4,7 +4,7 @@ import { FancyButton } from '@pixi/ui'
 
 export class DisplayController {
   private defaultView = new PIXI.Graphics()
-    .beginFill(0xffffff, 0.8)
+    .beginFill(0x16a383, 0.8)
     .drawRoundedRect(0, 0, 300, 50, 15)
     .endFill()
   private fancyButton = new FancyButton({
@@ -20,8 +20,9 @@ export class DisplayController {
     ),
   })
 
-  constructor(pos: IPoint) {
+  constructor(pos: IPoint, defaultText?:string) {
     this.fancyButton.position.set(pos.x, pos.y)
+    defaultText && this.setName(defaultText)
   }
 
   get() {
