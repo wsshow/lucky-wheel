@@ -5,15 +5,17 @@ import { DisplayController } from "./display";
 import { Pointer } from "./pointer";
 import { Wheel } from "./wheel";
 import { gsap } from "gsap";
+import { IData } from "./store";
 
 export class Game {
+  private radius = 300;
   private candidates: ICandidate[] = [];
   private stage_wheel: PIXI.Container<PIXI.DisplayObject>;
   constructor(app: PIXI.Application<PIXI.ICanvas>) {
     this.stage_wheel = this.game(app);
   }
   private game = (app: PIXI.Application<PIXI.ICanvas>) => {
-    let radius = 300;
+    let radius = this.radius;
     const wheel = new Wheel(app, radius);
     const stage_wheel = wheel.get();
 
@@ -35,7 +37,7 @@ export class Game {
     const candidate = new CandidateController(radius, stage_wheel.position);
 
     for (let index = 0; index < 30; index++) {
-      let s = candidate.get(12, index.toString());
+      let s = candidate.get(12);
       stage_wheel.addChild(s.container);
       this.candidates.push(s);
     }
@@ -65,12 +67,25 @@ export class Game {
     return stage_wheel;
   };
 
-  update(candidates: ICandidate[]) {
+  update(datas: IData[]) {
     this.candidates.forEach((el) => {
       this.stage_wheel.removeChild(el.container);
     });
-    candidates.forEach((el) => {
-      this.stage_wheel.addChild(el.container);
+    const candidate = new CandidateController(
+      this.radius,
+      this.stage_wheel.position
+    );
+    this.candidates.length = 0;
+    datas.forEach((el) => {
+      let percent = 0;
+      if (typeof el.percent === "string") {
+        percent = parseInt(el.percent);
+      } else {
+        percent = el.percent;
+      }
+      const s = candidate.get(percent*3.6, el.name);
+      this.stage_wheel.addChild(s.container);
+      this.candidates.push(s);
     });
   }
 }

@@ -24,10 +24,8 @@ export class Wheel {
     grap_wheel.position.set(stage_wheel.x, stage_wheel.y);
     grap_wheel.eventMode = "static";
     grap_wheel.cursor = "pointer";
-    grap_wheel.onclick = () => {
-      console.log(stage_wheel.rotation);
-    };
-    
+    grap_wheel.onclick = () => {};
+
     this.stage_wheel = stage_wheel;
     stage_wheel.addChild(grap_wheel);
     app.stage.addChild(grap_ring, stage_wheel);

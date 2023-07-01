@@ -12,6 +12,7 @@ import {
 } from "antd";
 import type { FormInstance } from "antd/es/form";
 import "./index.css";
+import { storeData } from "../../game/store";
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -122,13 +123,10 @@ type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 
 const ParamsTable: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([]);
-
   const [count, setCount] = useState(0);
   const [candidatesCount, setCandidatesCount] = useState(0);
   const [usedPercent, setUsedPercent] = useState(0);
-
   const [messageApi, contextHolder] = message.useMessage();
-
   const handleDelete = (key: React.Key) => {
     const newData = dataSource.filter((item) => item.key !== key);
     setDataSource(newData);
@@ -179,6 +177,20 @@ const ParamsTable: React.FC = () => {
   };
 
   useEffect(() => {
+    storeData
+      .getItem<DataType[]>("LUCKY_WHEEL")
+      .then((el) => {
+        if (el) {
+          setDataSource(el);
+          setCount(el.length);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
     setCandidatesCount(dataSource.length);
     let _usedPercent = 0;
     dataSource.forEach((el) => {
@@ -191,11 +203,15 @@ const ParamsTable: React.FC = () => {
       _usedPercent += per;
     });
     setUsedPercent(_usedPercent);
+    storeData.setItem("LUCKY_WHEEL", dataSource).catch((e) => {
+      console.log(e);
+    });
   }, [dataSource]);
 
   const handleDel = () => {
     setDataSource([]);
     setCount(0);
+    storeData.clear()
   };
 
   const handleSave = (row: DataType) => {

@@ -39,19 +39,17 @@ export class CandidateController {
 
   public get = (
     angle: number,
-    name: string,
+    name?: string,
     color?: PIXI.ColorSource
   ): ICandidate => {
     const startAngle = degreesToRads(-angle / 2);
     const endAngle = degreesToRads(angle / 2);
     const x1 = Math.cos(startAngle) * this.radius;
     const y1 = Math.sin(endAngle) * this.radius;
-
-    if (!color) {
-      const colorObj = getRandomColor();
-      name = colorObj.name;
-      color = colorObj.hex;
-    }
+    
+    const colorObj = getRandomColor();
+    color || (color = colorObj.hex);
+    name || (name = colorObj.name);
 
     const grap_sector = new PIXI.Graphics();
     grap_sector.lineStyle(5, 0xffffff);
@@ -75,7 +73,7 @@ export class CandidateController {
     });
     const text = new PIXI.Text(name, textStyle);
     text.x = rect.x + rect.width / 2;
-    text.y = rect.y -10+ rect.height / 2;
+    text.y = rect.y - 10 + rect.height / 2;
 
     const stage_sector = new PIXI.Container();
     stage_sector.addChild(grap_sector, text);
@@ -84,7 +82,7 @@ export class CandidateController {
     stage_sector.rotation = this.get_rotation_radian(angle);
 
     const candidate = {
-      name: name,
+      name: name!,
       color: color,
       rect: rect,
       container: stage_sector,
