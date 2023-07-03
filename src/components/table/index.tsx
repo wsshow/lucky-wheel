@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import type { InputRef } from "antd";
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import type { InputRef } from 'antd'
 import {
   Button,
   Form,
@@ -9,41 +9,41 @@ import {
   Table,
   Tag,
   message,
-} from "antd";
-import type { FormInstance } from "antd/es/form";
-import "./index.css";
-import { storeData } from "../../game/store";
+} from 'antd'
+import type { FormInstance } from 'antd/es/form'
+import './index.css'
+import { storeData } from '../../game/store'
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
+const EditableContext = React.createContext<FormInstance<any> | null>(null)
 
 interface Item {
-  key: string;
-  name: string;
-  percent: number;
+  key: string
+  name: string
+  percent: number
 }
 
 interface EditableRowProps {
-  index: number;
+  index: number
 }
 
 const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
   return (
     <Form form={form} component={false}>
       <EditableContext.Provider value={form}>
         <tr {...props} />
       </EditableContext.Provider>
     </Form>
-  );
-};
+  )
+}
 
 interface EditableCellProps {
-  title: React.ReactNode;
-  editable: boolean;
-  children: React.ReactNode;
-  dataIndex: keyof Item;
-  record: Item;
-  handleSave: (record: Item) => void;
+  title: React.ReactNode
+  editable: boolean
+  children: React.ReactNode
+  dataIndex: keyof Item
+  record: Item
+  handleSave: (record: Item) => void
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
@@ -55,33 +55,33 @@ const EditableCell: React.FC<EditableCellProps> = ({
   handleSave,
   ...restProps
 }) => {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef<InputRef>(null);
-  const form = useContext(EditableContext)!;
+  const [editing, setEditing] = useState(false)
+  const inputRef = useRef<InputRef>(null)
+  const form = useContext(EditableContext)!
 
   useEffect(() => {
     if (editing) {
-      inputRef.current!.focus();
+      inputRef.current!.focus()
     }
-  }, [editing]);
+  }, [editing])
 
   const toggleEdit = () => {
-    setEditing(!editing);
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-  };
+    setEditing(!editing)
+    form.setFieldsValue({ [dataIndex]: record[dataIndex] })
+  }
 
   const save = async () => {
     try {
-      const values = await form.validateFields();
+      const values = await form.validateFields()
 
-      toggleEdit();
-      handleSave({ ...record, ...values });
+      toggleEdit()
+      handleSave({ ...record, ...values })
     } catch (errInfo) {
-      console.log("Save failed:", errInfo);
+      console.log('Save failed:', errInfo)
     }
-  };
+  }
 
-  let childNode = children;
+  let childNode = children
 
   if (editable) {
     childNode = editing ? (
@@ -105,51 +105,51 @@ const EditableCell: React.FC<EditableCellProps> = ({
       >
         {children}
       </div>
-    );
+    )
   }
 
-  return <td {...restProps}>{childNode}</td>;
-};
-
-type EditableTableProps = Parameters<typeof Table>[0];
-
-interface DataType {
-  key: React.Key;
-  name: string;
-  percent: number;
+  return <td {...restProps}>{childNode}</td>
 }
 
-type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
+type EditableTableProps = Parameters<typeof Table>[0]
+
+interface DataType {
+  key: React.Key
+  name: string
+  percent: number
+}
+
+type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>
 
 const ParamsTable: React.FC = () => {
-  const [dataSource, setDataSource] = useState<DataType[]>([]);
-  const [count, setCount] = useState(0);
-  const [candidatesCount, setCandidatesCount] = useState(0);
-  const [usedPercent, setUsedPercent] = useState(0);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [dataSource, setDataSource] = useState<DataType[]>([])
+  const [count, setCount] = useState(0)
+  const [candidatesCount, setCandidatesCount] = useState(0)
+  const [usedPercent, setUsedPercent] = useState(0)
+  const [messageApi, contextHolder] = message.useMessage()
   const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setDataSource(newData);
-  };
+    const newData = dataSource.filter((item) => item.key !== key)
+    setDataSource(newData)
+  }
 
   const defaultColumns: (ColumnTypes[number] & {
-    editable?: boolean;
-    dataIndex: string;
+    editable?: boolean
+    dataIndex: string
   })[] = [
     {
-      title: "名称",
-      dataIndex: "name",
-      width: "30%",
+      title: '名称',
+      dataIndex: 'name',
+      width: '30%',
       editable: true,
     },
     {
-      title: "概率",
-      dataIndex: "percent",
+      title: '概率',
+      dataIndex: 'percent',
       editable: true,
     },
     {
-      title: "操作",
-      dataIndex: "operation",
+      title: '操作',
+      dataIndex: 'operation',
       render: (_, record: any, index: number) =>
         dataSource.length >= 1 ? (
           <Popconfirm
@@ -160,81 +160,81 @@ const ParamsTable: React.FC = () => {
           </Popconfirm>
         ) : null,
     },
-  ];
+  ]
 
   const handleAdd = () => {
     const newData: DataType = {
       key: count,
       name: `NULL`,
       percent: 0,
-    };
-    if (usedPercent + newData.percent >= 100) {
-      messageApi.error("分配概率超出100%, 请确认后重试");
-      return;
     }
-    setDataSource([...dataSource, newData]);
-    setCount(count + 1);
-  };
+    if (usedPercent + newData.percent >= 100) {
+      messageApi.error('分配概率超出100%, 请确认后重试')
+      return
+    }
+    setDataSource([...dataSource, newData])
+    setCount(count + 1)
+  }
 
   useEffect(() => {
     storeData
-      .getItem<DataType[]>("LUCKY_WHEEL")
+      .getItem<DataType[]>('LUCKY_WHEEL')
       .then((el) => {
         if (el) {
-          setDataSource(el);
-          setCount(el.length);
+          setDataSource(el)
+          setCount(el.length)
         }
       })
       .catch((e) => {
-        console.log(e);
-      });
-  }, []);
+        console.log(e)
+      })
+  }, [])
 
   useEffect(() => {
-    setCandidatesCount(dataSource.length);
-    let _usedPercent = 0;
+    setCandidatesCount(dataSource.length)
+    let _usedPercent = 0
     dataSource.forEach((el) => {
-      let per = 0;
-      if (typeof el.percent === "string") {
-        per = parseInt(el.percent);
+      let per = 0
+      if (typeof el.percent === 'string') {
+        per = parseInt(el.percent)
       } else {
-        per = el.percent;
+        per = el.percent
       }
-      _usedPercent += per;
-    });
-    setUsedPercent(_usedPercent);
-    storeData.setItem("LUCKY_WHEEL", dataSource).catch((e) => {
-      console.log(e);
-    });
-  }, [dataSource]);
+      _usedPercent += per
+    })
+    setUsedPercent(_usedPercent)
+    storeData.setItem('LUCKY_WHEEL', dataSource).catch((e) => {
+      console.log(e)
+    })
+  }, [dataSource])
 
   const handleDel = () => {
-    setDataSource([]);
-    setCount(0);
+    setDataSource([])
+    setCount(0)
     storeData.clear()
-  };
+  }
 
   const handleSave = (row: DataType) => {
-    const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
-    const item = newData[index];
+    const newData = [...dataSource]
+    const index = newData.findIndex((item) => row.key === item.key)
+    const item = newData[index]
     newData.splice(index, 1, {
       ...item,
       ...row,
-    });
-    setDataSource(newData);
-  };
+    })
+    setDataSource(newData)
+  }
 
   const components = {
     body: {
       row: EditableRow,
       cell: EditableCell,
     },
-  };
+  }
 
   const columns = defaultColumns.map((col) => {
     if (!col.editable) {
-      return col;
+      return col
     }
     return {
       ...col,
@@ -245,8 +245,8 @@ const ParamsTable: React.FC = () => {
         title: col.title,
         handleSave,
       }),
-    };
-  });
+    }
+  })
 
   return (
     <div>
@@ -268,14 +268,14 @@ const ParamsTable: React.FC = () => {
       </Space>
       <Table
         components={components}
-        rowClassName={() => "editable-row"}
+        rowClassName={() => 'editable-row'}
         bordered
         dataSource={dataSource}
         columns={columns as ColumnTypes}
         pagination={{ pageSize: 8 }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default ParamsTable;
+export default ParamsTable
