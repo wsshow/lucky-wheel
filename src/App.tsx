@@ -59,7 +59,7 @@ function App() {
   }
 
   const onSync = () => {
-    console.log('同步配置到服务器')
+    messageApi.warning('同步配置到服务器功能尚未启用')
   }
 
   return (
