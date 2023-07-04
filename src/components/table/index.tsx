@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import type { FormInstance } from 'antd/es/form'
 import './index.css'
-import { storeData } from '../../game/store'
+import { storeData } from '../../store'
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null)
 

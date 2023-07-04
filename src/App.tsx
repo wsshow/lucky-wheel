@@ -5,7 +5,7 @@ import { Game } from './game'
 import { Button, Drawer, Space, message } from 'antd'
 import { NewText } from './text'
 import ParamsTable from './components/table'
-import { IData, IParam, storeData } from './game/store'
+import { IData, IParam, storeData } from './store'
 import ParamsList from './components/list'
 
 function App() {

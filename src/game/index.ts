@@ -5,7 +5,7 @@ import { DisplayController } from './display'
 import { Pointer } from './pointer'
 import { Wheel } from './wheel'
 import { gsap } from 'gsap'
-import { IData, IParam } from './store'
+import { IData, IParam } from '../store'
 
 export class Game {
   private radius = 300

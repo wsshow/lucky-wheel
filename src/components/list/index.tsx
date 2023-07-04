@@ -1,7 +1,7 @@
 import { SwapRightOutlined } from '@ant-design/icons'
 import { Form, InputNumber, Select, SelectProps, Space, message } from 'antd'
 import { useEffect, useRef, useState } from 'react'
-import { IParam, storeData } from '../../game/store'
+import { IParam, storeData } from '../../store'
 import * as PIXI from 'pixi.js'
 import { gsap } from 'gsap'
 import { Timer } from '../../utils/timer'
