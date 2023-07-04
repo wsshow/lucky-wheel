@@ -68,3 +68,9 @@ export const debounce = () => {
     timeoutId = window.setTimeout(callback, wait)
   }
 }
+
+export const getDistance = (pt1: IPoint, pt2: IPoint) => {
+  const a = pt1.x - pt2.x
+  const b = pt1.y - pt2.y
+  return Math.sqrt(a * a + b * b)
+}
