@@ -14,8 +14,7 @@
 }
 
 .tags-right {
-    position: absolute;
-    right: 0;
-    margin-top: 6px;
-    margin-right: 24px;
-  }
+  margin-top: 6px;
+  margin-left: 52px;
+  margin-right: 2px;
+}

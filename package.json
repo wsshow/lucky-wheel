@@ -8,11 +8,14 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/crypto-js": "^4.1.1",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.37",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "antd": "^5.6.3",
+    "axios": "^1.4.0",
+    "crypto-js": "^4.1.1",
     "gsap": "^3.12.2",
     "localforage": "^1.10.0",
     "pixi.js": "^7.2.4",
@@ -47,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/antd": "^1.0.0",
     "@types/pixi.js": "^5.0.0"
   }

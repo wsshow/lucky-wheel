@@ -83,7 +83,14 @@ const ParamsList: React.FC = () => {
           setRangeMin(el.duration.min)
           setRangeMax(el.duration.max)
           setVFunc(el.vFunc)
-          console.log(el)
+        } else {
+          storeData.setItem<IParam>('LUCKY_PARAM', {
+            duration: {
+              min: 10,
+              max: 20,
+            },
+            vFunc: 'circ.out',
+          })
         }
       })
       .catch((e) => {

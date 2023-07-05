@@ -121,7 +121,7 @@ interface DataType {
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>
 
-const ParamsTable: React.FC = () => {
+const ParamsTable: React.FC<{ isReFresh: boolean }> = (props) => {
   const [dataSource, setDataSource] = useState<DataType[]>([])
   const [count, setCount] = useState(0)
   const [candidatesCount, setCandidatesCount] = useState(0)
@@ -188,7 +188,7 @@ const ParamsTable: React.FC = () => {
       .catch((e) => {
         console.log(e)
       })
-  }, [])
+  }, [props.isReFresh])
 
   useEffect(() => {
     setCandidatesCount(dataSource.length)
