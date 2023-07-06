@@ -13,12 +13,11 @@ export interface IData {
   percent: number
 }
 
-export interface ITrans {
+export interface ITrans extends IParam {
   name?: string
   count?: number
   time?: string
   data: IData[]
-  param?: IParam
 }
 
 export const storeData = localforage.createInstance({

@@ -50,7 +50,7 @@ vFuncs.forEach((el) => {
   })
 })
 
-const ParamsList: React.FC = () => {
+const ParamsList: React.FC<{ isReFresh: boolean }> = (props) => {
   const [messageApi, contextHolder] = message.useMessage()
   const [rangeMin, setRangeMin] = useState(10)
   const [rangeMax, setRangeMax] = useState(20)
@@ -96,7 +96,7 @@ const ParamsList: React.FC = () => {
       .catch((e) => {
         console.log(e)
       })
-  }, [])
+  }, [props.isReFresh])
 
   useEffect(() => {
     const vFuncCanvas = document.querySelector('#vFuncCanvas')

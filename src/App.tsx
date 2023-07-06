@@ -19,7 +19,7 @@ import { IData, IParam, ITrans, storeData } from './store'
 import ParamsList from './components/list'
 import classes from './App.module.css'
 import service from './utils/req'
-import CryptoJS from 'crypto-js'
+import AuthCheck from './components/check'
 
 interface IProfile {
   name: string
@@ -45,6 +45,8 @@ const reqUpdateProfile = (transData: ITrans) => {
 
 function App() {
   const [open, setOpen] = useState(false)
+  const [isAuth, setIsAuth] = useState(false)
+  const [isAuthModelOpen, setIsAuthModelOpen] = useState(false)
   const [isModelOpen, setIsModelOpen] = useState(false)
   const [isAddProfile, setIsAddProfile] = useState(false)
   const [isRefresh, setIsRefresh] = useState(false)
@@ -99,39 +101,49 @@ function App() {
       })
   }
 
+  const getProfiles = () => {
+    reqGetProfiles()
+      .then((successResponse) => {
+        if (successResponse.data.code === 0) {
+          if (!successResponse.data.data) {
+            return
+          }
+          setProfileData(successResponse.data.data)
+          setTimeout(() => {
+            const elList = document.getElementById('list')!
+            elList.scrollTop = elList.scrollHeight
+          }, 10)
+        } else {
+          messageApi.error(successResponse.data.desc)
+        }
+      })
+      .catch((failResponse) => {
+        messageApi.error(failResponse)
+      })
+  }
+
   const onSync = () => {
+    const authcode = localStorage.getItem('lw_authcode')
+    if (!authcode) {
+      setIsAuthModelOpen(true)
+      setIsAuth(false)
+      return
+    }
+    setIsAuthModelOpen(false)
+    setIsAuth(true)
     storeData
       .getItem<IData[]>('LUCKY_WHEEL')
       .then((data) => {
         storeData.getItem<IParam>('LUCKY_PARAM').then((param) => {
-          reqGetProfiles()
-            .then((successResponse) => {
-              if (successResponse.data.code === 0) {
-                if (!successResponse.data.data) {
-                  return
-                }
-                setProfileData(successResponse.data.data)
-                setTimeout(() => {
-                  const elList = document.getElementById('list')!
-                  elList.scrollTop = elList.scrollHeight
-                }, 10)
-              } else {
-                messageApi.error(successResponse.data.desc)
-              }
-            })
-            .catch((failResponse) => {
-              messageApi.error(failResponse)
-            })
-
+          getProfiles()
           if (data && param && data.length > 0) {
             setIsAddProfile(true)
             setIsModelOpen(!isModelOpen)
             const _transData: ITrans = {
               data: data,
-              param: {
-                duration: param.duration,
-                vFunc: param.vFunc,
-              },
+
+              duration: param.duration,
+              vFunc: param.vFunc,
             }
             setTransData(_transData)
             return
@@ -159,10 +171,11 @@ function App() {
         onClick={() => {
           if (transData) {
             const trans: ITrans = {
-              data: transData.data,
-              param: transData.param,
+              ...transData,
               name: profileName,
             }
+            console.log(trans)
+
             reqAddProfile(trans)
               .then((successResponse) => {
                 if (successResponse.data.code === 0) {
@@ -222,103 +235,124 @@ function App() {
         }
       >
         <ParamsTable isReFresh={isRefresh} />
-        <ParamsList />
-        <Modal
-          title="选择配置"
-          open={isModelOpen}
-          footer={isAddProfile ? addProfile : null}
-          onCancel={() => setIsModelOpen(false)}
-        >
-          <List
-            id="list"
-            className={classes.List}
-            itemLayout="horizontal"
-            dataSource={profileData}
-            renderItem={(item, index) => (
-              <List.Item
-                className={classes.ListItem}
-                extra={
-                  <div>
-                    <Tag color="geekblue">同步次数: {item.count}</Tag>
-                    <Tag color="cyan">同步时间: {item.time}</Tag>
-                  </div>
-                }
-                onClick={() => {
-                  if (transData) {
-                    const trans = { data: transData.data, name: item.name }
-                    reqUpdateProfile(trans)
-                      .then((successResponse) => {
-                        if (successResponse.data.code === 0) {
-                          messageApi.success('数据更新成功')
-                          setIsModelOpen(false)
-                        } else {
-                          messageApi.error(successResponse.data.desc)
-                        }
-                      })
-                      .catch((failResponse) => {
-                        messageApi.error(failResponse)
-                      })
-                  } else {
-                    reqSyncProfiles(item.name)
-                      .then((successResponse) => {
-                        if (successResponse.data.code === 0) {
-                          const d = successResponse.data.data
-                          storeData
-                            .setItem('LUCKY_WHEEL', d.data)
-                            .catch((e) => {
-                              console.log(e)
-                            })
-                          storeData
-                            .setItem('LUCKY_PARAM', {
-                              duration: d.duration,
-                              vFunc: d.vFunc,
-                            })
-                            .catch((e) => {
-                              console.log(e)
-                            })
-                          messageApi.success('数据同步成功')
-                          setTimeout(() => {
-                            setIsRefresh(!isRefresh)
-                          }, 10)
-                          setIsModelOpen(false)
-                        } else {
-                          messageApi.error(successResponse.data.desc)
-                        }
-                      })
-                      .catch((failResponse) => {
-                        messageApi.error(failResponse)
-                      })
+        <ParamsList isReFresh={isRefresh} />
+        {isAuth ? (
+          <Modal
+            title="选择配置"
+            open={isModelOpen}
+            footer={isAddProfile ? addProfile : null}
+            onCancel={() => setIsModelOpen(false)}
+          >
+            <List
+              id="list"
+              className={classes.List}
+              itemLayout="horizontal"
+              dataSource={profileData}
+              renderItem={(item, index) => (
+                <List.Item
+                  className={classes.ListItem}
+                  extra={
+                    <div>
+                      <Tag color="geekblue">同步次数: {item.count}</Tag>
+                      <Tag color="cyan">同步时间: {item.time}</Tag>
+                    </div>
                   }
-                }}
-              >
-                <Space style={{ marginLeft: '12px' }}>
-                  <Avatar
-                    style={{
-                      backgroundColor: '#ffffff',
-                      color: '#ff8200',
-                      verticalAlign: 'middle',
-                    }}
-                    size="small"
-                  >
-                    {index + 1}
-                  </Avatar>
-                  <Button
-                    type="link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      color: '#0078b6',
-                    }}
-                  >
-                    {item.name!.length > 22
-                      ? item.name!.substring(0, 22) + '...'
-                      : item.name}
-                  </Button>
-                </Space>
-              </List.Item>
-            )}
-          />
-        </Modal>
+                  onClick={() => {
+                    if (transData) {
+                      const trans = { ...transData, name: item.name }
+                      reqUpdateProfile(trans)
+                        .then((successResponse) => {
+                          if (successResponse.data.code === 0) {
+                            messageApi.success('数据更新成功')
+                            setIsModelOpen(false)
+                          } else {
+                            messageApi.error(successResponse.data.desc)
+                          }
+                        })
+                        .catch((failResponse) => {
+                          messageApi.error(failResponse)
+                        })
+                    } else {
+                      reqSyncProfiles(item.name)
+                        .then((successResponse) => {
+                          if (successResponse.data.code === 0) {
+                            const d = successResponse.data.data
+                            console.log(d)
+
+                            storeData
+                              .setItem('LUCKY_WHEEL', d.data)
+                              .catch((e) => {
+                                console.log(e)
+                              })
+                            storeData
+                              .setItem('LUCKY_PARAM', {
+                                duration: d.duration,
+                                vFunc: d.vFunc,
+                              })
+                              .catch((e) => {
+                                console.log(e)
+                              })
+                            messageApi.success('数据同步成功')
+                            setTimeout(() => {
+                              setIsRefresh(!isRefresh)
+                            }, 10)
+                            setIsModelOpen(false)
+                          } else {
+                            messageApi.error(successResponse.data.desc)
+                          }
+                        })
+                        .catch((failResponse) => {
+                          messageApi.error(failResponse)
+                        })
+                    }
+                  }}
+                >
+                  <Space style={{ marginLeft: '12px' }}>
+                    <Avatar
+                      style={{
+                        backgroundColor: '#ffffff',
+                        color: '#ff8200',
+                        verticalAlign: 'middle',
+                      }}
+                      size="small"
+                    >
+                      {index + 1}
+                    </Avatar>
+                    <Button
+                      type="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: '#0078b6',
+                      }}
+                    >
+                      {item.name!.length > 22
+                        ? item.name!.substring(0, 22) + '...'
+                        : item.name}
+                    </Button>
+                  </Space>
+                </List.Item>
+              )}
+            />
+          </Modal>
+        ) : (
+          <Modal
+            width={500}
+            closable={false}
+            open={isAuthModelOpen}
+            onCancel={() => setIsAuthModelOpen(false)}
+            footer={null}
+          >
+            <AuthCheck
+              callbackFn={() => {
+                getProfiles()
+                setIsAuthModelOpen(false)
+                setIsAuth(true)
+                setIsModelOpen(true)
+              }}
+            />
+          </Modal>
+        )}
       </Drawer>
     </>
   )
