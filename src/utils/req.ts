@@ -24,6 +24,8 @@ service.interceptors.response.use(
     response.config.metadata.endTime = new Date()
     response.duration =
       response.config.metadata.endTime - response.config.metadata.startTime
+    if (response.data.desc.includes('校验失败'))
+      localStorage.removeItem('lw_authcode')
     return response
   },
   function (error: any) {
