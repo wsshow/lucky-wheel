@@ -6,6 +6,8 @@ import { Pointer } from './pointer'
 import { Wheel } from './wheel'
 import { gsap } from 'gsap'
 import { IData, IParam } from '../store'
+import { ResultController } from './result'
+import { getRandomPoetry } from '../poetry'
 
 export class Game {
   private radius = 300
@@ -44,7 +46,10 @@ export class Game {
       this.candidates.push(s)
     }
 
-    app.stage.addChild(display, pointer)
+    const resultController = new ResultController()
+    const result = resultController.get()
+
+    app.stage.addChild(display, pointer, result)
 
     displayController.onPress(() => {
       gsap.to(stage_wheel, {
@@ -52,6 +57,9 @@ export class Game {
         duration: this.duration,
         repeat: 0,
         ease: this.vFunc,
+        onStart: () => {
+          resultController.hide()
+        },
         onUpdate: () => {
           this.candidates.forEach((el) => {
             if (el.container.getBounds().intersects(pointer.getBounds())) {
@@ -64,6 +72,7 @@ export class Game {
           if (display.text?.includes('再转一次')) {
             return
           }
+          resultController.text(getRandomPoetry().content)
           display.text = `恭喜: ${display.text} 🎉🎉🎉`
         },
       })

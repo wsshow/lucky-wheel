@@ -71,7 +71,7 @@ function App() {
 
     gameRef.current = new Game(app)
 
-    const logo = NewText('lucky wheel')
+    const logo = NewText('说英雄谁是英雄')
     logo.cursor = 'pointer'
     logo.on('pointerdown', () => {
       setOpen(true)

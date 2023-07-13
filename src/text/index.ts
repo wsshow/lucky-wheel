@@ -10,15 +10,15 @@ export function NewText(s: string): PIXI.Text {
     dropShadowDistance: 10,
     fill: ['#ffffff'],
     stroke: '#004620',
-    fontSize: 60,
+    fontSize: 30,
     fontWeight: 'lighter',
     lineJoin: 'round',
     strokeThickness: 12,
   })
   const skewText = new PIXI.Text(s, skewStyle)
-  skewText.skew.set(0.1, -0.1)
-  skewText.x = 6
-  skewText.y = 20
+  skewText.skew.set(0.2, -0.2)
+  skewText.x = 3
+  skewText.y = 36
   skewText.eventMode = 'static'
   return skewText
 }
