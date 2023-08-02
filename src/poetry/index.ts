@@ -34,4 +34,10 @@ const cn_poetry = [
     content: ['尔曹身与名俱灭', '不废江河万古流'],
     type: '近代',
   },
+  {
+    title: '题三十计小象',
+    author: '吴庆坻',
+    content: ['须知少日拏云志', '曾许人间第一流'],
+    type: '清代',
+  },
 ]
