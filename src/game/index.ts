@@ -72,7 +72,7 @@ export class Game {
           if (display.text?.includes('再转一次')) {
             return
           }
-          resultController.text(getRandomPoetry().content)
+          resultController.text(getRandomPoetry())
           display.text = `恭喜: ${display.text} 🎉🎉🎉`
         },
       })
