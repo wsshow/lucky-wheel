@@ -53,7 +53,7 @@ export class Game {
 
     displayController.onPress(() => {
       gsap.to(stage_wheel, {
-        rotation: getRandom(360, 720),
+        rotation: `+=${getRandom(360, 720)}`,
         duration: this.duration,
         repeat: 0,
         ease: this.vFunc,
