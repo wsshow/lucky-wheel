@@ -174,7 +174,6 @@ function App() {
               ...transData,
               name: profileName,
             }
-            console.log(trans)
 
             reqAddProfile(trans)
               .then((successResponse) => {
