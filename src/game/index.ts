@@ -5,7 +5,7 @@ import { DisplayController } from './display'
 import { Pointer } from './pointer'
 import { Wheel } from './wheel'
 import { gsap } from 'gsap'
-import { IData, IParam } from '../store'
+import { IData, IParam, storeData } from '../store'
 import { ResultController } from './result'
 import { getRandomPoetry } from '../poetry'
 
@@ -38,13 +38,28 @@ export class Game {
       'img/pointer.svg'
     ).get()
 
-    const candidate = new CandidateController(radius, stage_wheel.position)
-
-    for (let index = 0; index < 30; index++) {
-      let s = candidate.get(12)
-      stage_wheel.addChild(s.container)
-      this.candidates.push(s)
-    }
+    storeData
+      .getItem<IData[]>('LUCKY_WHEEL')
+      .then((data) => {
+        storeData.getItem<IParam>('LUCKY_PARAM').then((param) => {
+          if (data && param) {
+            this.update(data, param)
+          } else {
+            const candidate = new CandidateController(
+              radius,
+              stage_wheel.position
+            )
+            for (let index = 0; index < 30; index++) {
+              let s = candidate.get(12)
+              stage_wheel.addChild(s.container)
+              this.candidates.push(s)
+            }
+          }
+        })
+      })
+      .catch(() => {
+        console.error('LUCKY_WHEEL 数据加载失败')
+      })
 
     const resultController = new ResultController()
     const result = resultController.get()
