@@ -215,7 +215,7 @@ function App() {
       <div id="pixiCanvas"></div>
       <Drawer
         title="设置"
-        width={600}
+        width={620}
         placement="right"
         onClose={onClose}
         open={open}
