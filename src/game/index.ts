@@ -42,7 +42,7 @@ export class Game {
       .getItem<IData[]>('LUCKY_WHEEL')
       .then((data) => {
         storeData.getItem<IParam>('LUCKY_PARAM').then((param) => {
-          if (data && param) {
+          if (data && data.length > 0 && param) {
             this.update(data, param)
           } else {
             const candidate = new CandidateController(
